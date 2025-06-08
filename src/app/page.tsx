@@ -635,53 +635,101 @@ const MenuPage: React.FC<{ setCurrentPage: (page: PageType) => void }> = ({ setC
   };
 
   const generateWhatsAppMessage = (): void => {
+    // Generar número de ticket aleatorio de 6 dígitos
+    const ticketNumber = Math.floor(100000 + Math.random() * 900000);
+
     const selectedToppingNames = selectedPancakes.includedToppings.map(id => {
       const freeToppings = menuData.toppings.free.find(t => t.id === id);
       const premiumToppings = menuData.toppings.premium.find(t => t.id === id);
-      return freeToppings?.name || premiumToppings?.name;
-    }).filter(Boolean);
+      return {
+        name: freeToppings?.name || premiumToppings?.name,
+        price: premiumToppings?.price || 0,
+        isPremium: !!premiumToppings
+      };
+    }).filter(t => t.name);
 
-    const selectedJellyNames = selectedPancakes.includedJellies.map(id => {
-      return menuData.jellies.find(j => j.id === id)?.name;
-    }).filter(Boolean);
+    const selectedJellyNames = selectedPancakes.includedJellies.map((id, idx) => {
+      const jelly = menuData.jellies.find(j => j.id === id);
+      // La primera jalea es gratis, las demás cuestan $0.25
+      return {
+        name: jelly?.name,
+        price: idx === 0 ? 0 : 0.25
+      };
+    }).filter(j => j.name);
 
     const selectedDeliveryOption = deliveryOptions.find(option => option.id === customerData.deliveryType);
 
-    // Crear líneas de toppings con emojis
-    const toppingsWithEmojis = selectedPancakes.includedToppings.map(id => {
-      const freeToppings = menuData.toppings.free.find(t => t.id === id);
-      const premiumToppings = menuData.toppings.premium.find(t => t.id === id);
-      const topping = freeToppings || premiumToppings;
-      return topping ? `${topping.emoji} ${topping.name}` : '';
-    }).filter(Boolean);
+    // Subtotales
+    const packageSubtotal = selectedPackage?.price || 0;
+    const premiumToppingsSubtotal = selectedToppingNames.reduce((sum, t) => sum + (t.isPremium ? (t.price || 0) : 0), 0);
+    const extraToppingsCount = Math.max(0, selectedPancakes.includedToppings.length - 2);
+    const extraToppingsSubtotal = extraToppingsCount * 0.25;
+    const jelliesSubtotal = selectedJellyNames.reduce((sum, j) => sum + (j.price || 0), 0);
+    const deliverySubtotal = selectedDeliveryOption?.price || 0;
+    const total = (
+      packageSubtotal +
+      premiumToppingsSubtotal +
+      extraToppingsSubtotal +
+      jelliesSubtotal +
+      deliverySubtotal
+    ).toFixed(2);
 
-    // Crear líneas de jaleas con emojis  
-    const jelliesWithEmojis = selectedPancakes.includedJellies.map(id => {
-      const jelly = menuData.jellies.find(j => j.id === id);
-      return jelly ? `${jelly.emoji} ${jelly.name}` : '';
-    }).filter(Boolean);
+    // Crear líneas de toppings sin emojis y con precios
+    const toppingsList = selectedToppingNames.length > 0
+      ? `*Toppings seleccionados:*\n${selectedToppingNames.map((t, idx) => {
+          let extra = '';
+          if (t.isPremium) {
+            extra = `+$${(t.price || 0).toFixed(2)}`;
+          } else if (idx >= 2) {
+            extra = '+$0.25';
+          } else {
+            extra = 'Gratis';
+          }
+          return `   ✓ ${t.name} (${extra})`;
+        }).join('\n')}${extraToppingsCount > 0 ? `\n   (${extraToppingsCount} toppings extra x $0.25)` : ''}`
+      : '*Toppings:* Ninguno seleccionado';
+
+    // Crear líneas de jaleas sin emojis y con precios
+    const jelliesList = selectedJellyNames.length > 0
+      ? `*Jaleas artesanales:*\n${selectedJellyNames.map((j, idx) => {
+          const extra = idx === 0 ? 'Gratis' : '+$0.25';
+          return `   ✓ ${j.name} (${extra})`;
+        }).join('\n')}${selectedJellyNames.length > 1 ? `\n   (${selectedJellyNames.length - 1} jaleas extra x $0.25)` : ''}`
+      : '*Jaleas:* Ninguna seleccionada';
+
+    // Lista de subtotales
+    const subtotalsList = [
+      `• ${selectedPackage?.quantity} Mini Pancakes: $${packageSubtotal.toFixed(2)}`,
+      premiumToppingsSubtotal > 0 ? `• Toppings premium: $${premiumToppingsSubtotal.toFixed(2)}` : null,
+      extraToppingsSubtotal > 0 ? `• Toppings extra: $${extraToppingsSubtotal.toFixed(2)}` : null,
+      jelliesSubtotal > 0 ? `• Jaleas extra: $${jelliesSubtotal.toFixed(2)}` : null,
+      deliverySubtotal > 0 ? `• Entrega (${selectedDeliveryOption?.name}): $${deliverySubtotal.toFixed(2)}` : null
+    ].filter(Boolean).join('\n');
 
     const message = `*¡NUEVO PEDIDO DULCE MOMENTO!*
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+*Ticket #${ticketNumber}*
 
 *MI PEDIDO PERSONALIZADO:*
 
 Cantidad: *${selectedPackage?.quantity} Mini Pancakes*
 Paquete: ${selectedPackage?.description}
 
-${toppingsWithEmojis.length > 0 ? `*Toppings seleccionados:*
-${toppingsWithEmojis.map(topping => `   ✓ ${topping}`).join('\n')}` : '*Toppings:* Ninguno seleccionado'}
+${toppingsList}
 
-${jelliesWithEmojis.length > 0 ? `*Jaleas artesanales:*
-${jelliesWithEmojis.map(jelly => `   ✓ ${jelly}`).join('\n')}` : '*Jaleas:* Ninguna seleccionada'}
+${jelliesList}
 
 *Tipo de entrega:* ${selectedDeliveryOption?.name}
 *Tiempo estimado:* ${selectedDeliveryOption?.timeRange}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-*TOTAL A PAGAR: $${calculateTotal()}*
+*DETALLE DE PRECIOS:*
+${subtotalsList}
+
+*TOTAL A PAGAR: $${total}*
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 
