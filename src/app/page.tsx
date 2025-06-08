@@ -663,7 +663,7 @@ const MenuPage: React.FC<{ setCurrentPage: (page: PageType) => void }> = ({ setC
 
     const message = `🥞 *¡NUEVO PEDIDO DULCE MOMENTO!* 🥞
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📦 *MI PEDIDO PERSONALIZADO:*
 
@@ -679,11 +679,11 @@ ${jelliesWithEmojis.map(jelly => `   ✓ ${jelly}`).join('\n')}` : '🍯 *Jaleas
 🚚 *Tipo de entrega:* ${selectedDeliveryOption?.name}
 ⏰ *Tiempo estimado:* ${selectedDeliveryOption?.timeRange}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 💰 *TOTAL A PAGAR: $${calculateTotal()}*
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 👤 *DATOS DE ENTREGA:*
 
@@ -695,11 +695,11 @@ ${customerData.address}${customerData.notes ? `
 📝 *Notas especiales:*
 ${customerData.notes}` : ''}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ✨ *¡Listo para disfrutar tus minipancakes artesanales!* ✨
 
-_Confirma tu pedido y te responderemos en máximo 15 minutos_`;
+_Confirma tu pedido y te responderemos en un máximo de 15 minutos_`;
 
     const encodedMessage = encodeURIComponent(message);
     const whatsappNumber = '50376606320';
