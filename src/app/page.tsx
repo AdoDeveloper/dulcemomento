@@ -636,7 +636,12 @@ const MenuPage: React.FC<{ setCurrentPage: (page: PageType) => void }> = ({ setC
 
   const generateWhatsAppMessage = (): void => {
     // Generar número de ticket aleatorio de 6 dígitos
-    const ticketNumber = Math.floor(100000 + Math.random() * 900000);
+    // Generar número de ticket aleatorio de 6 caracteres (letras mayúsculas y dígitos)
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let ticketNumber = '';
+    for (let i = 0; i < 6; i++) {
+      ticketNumber += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
 
     const selectedToppingNames = selectedPancakes.includedToppings.map(id => {
       const freeToppings = menuData.toppings.free.find(t => t.id === id);
@@ -708,7 +713,7 @@ const MenuPage: React.FC<{ setCurrentPage: (page: PageType) => void }> = ({ setC
 
     const message = `*¡NUEVO PEDIDO DULCE MOMENTO!*
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━
 
 *Ticket #${ticketNumber}*
 
@@ -724,16 +729,16 @@ ${jelliesList}
 *Tipo de entrega:* ${selectedDeliveryOption?.name}
 *Tiempo estimado:* ${selectedDeliveryOption?.timeRange}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━
 
 *DETALLE DE PRECIOS:*
 ${subtotalsList}
 
 *TOTAL A PAGAR: $${total}*
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━
 
-👤 *DATOS DE ENTREGA:*
+*DATOS DE ENTREGA:*
 
 *Nombre:* ${customerData.name}
 *Teléfono:* ${customerData.phone}
@@ -743,9 +748,9 @@ ${customerData.address}${customerData.notes ? `
 *Notas especiales:*
 ${customerData.notes}` : ''}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━
 
-*¡Listo para disfrutar tus minipancakes artesanales!*
+*¡Listo para disfrutar tus minipancakes!*
 
 _Confirma tu pedido y te responderemos en un máximo de 15 minutos_`;
 
