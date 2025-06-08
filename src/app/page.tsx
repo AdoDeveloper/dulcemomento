@@ -661,43 +661,43 @@ const MenuPage: React.FC<{ setCurrentPage: (page: PageType) => void }> = ({ setC
       return jelly ? `${jelly.emoji} ${jelly.name}` : '';
     }).filter(Boolean);
 
-    const message = `🥞 *¡NUEVO PEDIDO DULCE MOMENTO!* 🥞
+    const message = `*¡NUEVO PEDIDO DULCE MOMENTO!*
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📦 *MI PEDIDO PERSONALIZADO:*
+*MI PEDIDO PERSONALIZADO:*
 
-🔢 Cantidad: *${selectedPackage?.quantity} Mini Pancakes*
-📋 Paquete: ${selectedPackage?.description}
+Cantidad: *${selectedPackage?.quantity} Mini Pancakes*
+Paquete: ${selectedPackage?.description}
 
-${toppingsWithEmojis.length > 0 ? `🍓 *Toppings seleccionados:*
-${toppingsWithEmojis.map(topping => `   ✓ ${topping}`).join('\n')}` : '🍓 *Toppings:* Ninguno seleccionado'}
+${toppingsWithEmojis.length > 0 ? `*Toppings seleccionados:*
+${toppingsWithEmojis.map(topping => `   ✓ ${topping}`).join('\n')}` : '*Toppings:* Ninguno seleccionado'}
 
-${jelliesWithEmojis.length > 0 ? `🍯 *Jaleas artesanales:*
-${jelliesWithEmojis.map(jelly => `   ✓ ${jelly}`).join('\n')}` : '🍯 *Jaleas:* Ninguna seleccionada'}
+${jelliesWithEmojis.length > 0 ? `*Jaleas artesanales:*
+${jelliesWithEmojis.map(jelly => `   ✓ ${jelly}`).join('\n')}` : '*Jaleas:* Ninguna seleccionada'}
 
-🚚 *Tipo de entrega:* ${selectedDeliveryOption?.name}
-⏰ *Tiempo estimado:* ${selectedDeliveryOption?.timeRange}
+*Tipo de entrega:* ${selectedDeliveryOption?.name}
+*Tiempo estimado:* ${selectedDeliveryOption?.timeRange}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💰 *TOTAL A PAGAR: $${calculateTotal()}*
+*TOTAL A PAGAR: $${calculateTotal()}*
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 👤 *DATOS DE ENTREGA:*
 
-📛 *Nombre:* ${customerData.name}
-📱 *Teléfono:* ${customerData.phone}
-📍 *Dirección completa:*
+*Nombre:* ${customerData.name}
+*Teléfono:* ${customerData.phone}
+*Dirección completa:*
 ${customerData.address}${customerData.notes ? `
 
-📝 *Notas especiales:*
+*Notas especiales:*
 ${customerData.notes}` : ''}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-✨ *¡Listo para disfrutar tus minipancakes artesanales!* ✨
+*¡Listo para disfrutar tus minipancakes artesanales!*
 
 _Confirma tu pedido y te responderemos en un máximo de 15 minutos_`;
 
